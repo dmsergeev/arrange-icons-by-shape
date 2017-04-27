@@ -12,7 +12,7 @@ namespace ArrangeIconsByShape.DesktopIconsManager.Windows
         public int GetNumberOfIcons()
             => (int)User32.SendMessage(GetDesktopWindow(), User32.LVM_GETITEMCOUNT, 0, IntPtr.Zero);
         
-        public IEnumerable<Tuple<int, int>> GetIconsPositions()
+        public IEnumerable<(int x, int y)> GetIconsPositions()
         {
             var wnd = GetDesktopWindow();
             User32.GetWindowThreadProcessId(wnd, out uint pid);
@@ -25,7 +25,7 @@ namespace ArrangeIconsByShape.DesktopIconsManager.Windows
                 sharedMemoryPointer = Kernel32.VirtualAllocEx(desktopProcessHandle, IntPtr.Zero, 4096, Kernel32.AllocationType.Reserve | Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ReadWrite);
 
                 var iconsCount = GetNumberOfIcons();
-                var icons = new List<Tuple<int, int>>();
+                var icons = new List<(int x, int y)>();
 
                 for (var index = 0; index < iconsCount; index++)
                 {
@@ -36,7 +36,7 @@ namespace ArrangeIconsByShape.DesktopIconsManager.Windows
                     User32.SendMessage(wnd, User32.LVM_GETITEMPOSITION, index, sharedMemoryPointer);
                     Kernel32.ReadProcessMemory(desktopProcessHandle, sharedMemoryPointer, Marshal.UnsafeAddrOfPinnedArrayElement(points, 0), Marshal.SizeOf(typeof(User32.IconPoint)), ref numberOfBytes);
 
-                    icons.Add(new Tuple<int, int>(points[0].X, points[0].Y));
+                    icons.Add((x: points[0].X, y: points[0].Y));
                 }
 
                 return icons;

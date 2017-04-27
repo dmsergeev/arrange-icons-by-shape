@@ -11,7 +11,7 @@ namespace ArrangeIconsByShape.ConsoleApp
             var manager = new WindowsDesktopIconsManager();
             Console.WriteLine($"Total number: {manager.GetNumberOfIcons()}");
             Console.WriteLine("Positions: ");
-            manager.GetIconsPositions().ToList().ForEach(x => Console.WriteLine($"{x.Item1}, {x.Item2}"));
+            manager.GetIconsPositions().ToList().ForEach(icon => Console.WriteLine($"{icon.x}, {icon.y}"));
             Console.ReadKey();
         }
     }
