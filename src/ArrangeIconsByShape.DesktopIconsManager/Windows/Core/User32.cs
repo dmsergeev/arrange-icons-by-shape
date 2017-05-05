@@ -10,60 +10,43 @@ namespace ArrangeIconsByShape.DesktopIconsManager.Windows.Core
         public const uint LVM_GETITEMCOUNT = LVM_FIRST + 4;
         public const uint LVM_SETITEMPOSITION = LVM_FIRST + 15;
         public const uint LVM_GETITEMPOSITION = LVM_FIRST + 16;
+        public const int GWL_STYLE = -16;
+        public const int WM_COMMAND = 0x0111;
 
-        public delegate bool EnumWindowsProc(IntPtr wnd, int param);
+        internal delegate bool EnumWindowsProc(IntPtr wnd, int param);
+        internal delegate bool EnumDisplayMonitorsDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Rectangle lprcMonitor, IntPtr dwData);
 
-        [DllImport("user32.DLL")]
-        public static extern bool EnumWindows(EnumWindowsProc enum_func, int param);
-
-        [DllImport("user32.DLL")]
-        public static extern int GetWindowText(IntPtr wnd, StringBuilder sb, int max_count);
-
-        [DllImport("user32.DLL")]
-        public static extern int GetWindowTextLength(IntPtr wnd);
+        public static IntPtr MakeLParam(int wLow, int wHigh) => (IntPtr)(((short)wHigh << 16) | (wLow & 0xffff));
 
         [DllImport("user32.DLL")]
-        public static extern bool IsWindowVisible(IntPtr wnd);
+        internal static extern bool EnumWindows(EnumWindowsProc enum_func, int param);
 
         [DllImport("user32.DLL")]
-        public static extern IntPtr GetShellWindow();
+        internal static extern IntPtr GetShellWindow();
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindowEx(IntPtr wnd, IntPtr wnd_child_after, string @class, string window);
+        internal static extern IntPtr FindWindowEx(IntPtr wnd, IntPtr wnd_child_after, string @class, string window);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetClassName(IntPtr wnd, StringBuilder class_name, int max_count);
+        internal static extern int GetClassName(IntPtr wnd, StringBuilder class_name, int max_count);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr wnd, UInt32 msg, int w_param, IntPtr l_param);
+        internal static extern IntPtr SendMessage(IntPtr wnd, uint msg, int w_param, IntPtr l_param);
 
         [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr wnd, out uint process_id);
+        internal static extern uint GetWindowThreadProcessId(IntPtr wnd, out uint process_id);
 
         [DllImport("user32.dll")]
-        public static extern bool RegisterHotKey(IntPtr wnd, int id, uint modifiers, uint vk);
+        internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, [Out] out MonitorInfo lpmi);
 
         [DllImport("user32.dll")]
-        public static extern bool UnregisterHotKey(IntPtr wnd, int id);
+        internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct IconPoint
-        {
-            public int X;
-            public int Y;
-        }
+        [DllImport("user32")]
+        internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        public enum ShowWindowCommands
-        {
-            Hide = 0,
-            Normal = 1,
-            Minimized = 2,
-            Maximized = 3,
-        }
-
-        public static IntPtr MakeLParam(int low, int high)
-        {
-            return (IntPtr)(((short)high << 16) | (low & 0xffff));
-        }
+        [DllImport("user32.dll")]
+        internal static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip,
+            EnumDisplayMonitorsDelegate lpfnEnum, IntPtr dwData);
     }
 }
