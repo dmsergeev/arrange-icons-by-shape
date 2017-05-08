@@ -1,16 +1,13 @@
 ﻿namespace ArrangeIconsByShape.DesktopIconsManager.Windows.Core
 {
     using System;
-    using System.Runtime.InteropServices;
 
-    [StructLayout(LayoutKind.Sequential)]
     internal struct Point
     {
         public int x;
         public int y;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
     internal struct WindowPosition
     {
         public IntPtr hwnd;
@@ -22,23 +19,20 @@
         public SetWindowPositionOptions flags;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
     internal struct Rectangle
     {
-        public int left;
-        public int top;
-        public int right;
-        public int bottom;
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
     internal struct IconPoint
     {
         public int X;
         public int Y;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
     internal struct MonitorInfo
     {
         public int cbSize;

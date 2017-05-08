@@ -83,19 +83,27 @@
             var iconsCount = GetNumberOfIcons();
             var random = new Random();
 
+            DisableAutoArrangeIcons(wnd);
+            DisableSnapToGrid(wnd);
+
             for (var index = 0; index < iconsCount; index++)
             {
                 var randomCoordinatesWithinMonitor = GetRandomCoordinates(monitor, random);
                 User32.SendMessage(wnd, User32.LVM_SETITEMPOSITION, index, 
                     User32.MakeLParam(randomCoordinatesWithinMonitor.x, randomCoordinatesWithinMonitor.y));
             }
+        }
+        /// <summary>
+        /// Not working
+        /// </summary>
+        /// <param name="wnd"></param>
+        private static void DisableSnapToGrid(IntPtr wnd) => User32.SendMessage(wnd, User32.LVM_ARRANGE, (int)ListViewAlignment.LVA_DEFAULT, IntPtr.Zero);
 
+        private static void DisableAutoArrangeIcons(IntPtr wnd)
+        {
             var styleHandle = User32.GetWindowLong(wnd, User32.GWL_STYLE);
-            // If the list view is set for auto-arrange turn it off 
             if ((styleHandle & (int) ListViewStyles.LVS_AUTOARRANGE) == (int) ListViewStyles.LVS_AUTOARRANGE)
-            {
-                User32.SetWindowLong(wnd, User32.GWL_STYLE, styleHandle & ~(int)ListViewStyles.LVS_AUTOARRANGE);
-            }
+                User32.SetWindowLong(wnd, User32.GWL_STYLE, styleHandle & ~(int) ListViewStyles.LVS_AUTOARRANGE);
         }
 
         private static (int x, int y) GetRandomCoordinates(Monitor monitor, Random random)
@@ -169,8 +177,8 @@
             return success
                 ? new Monitor
                 {
-                    UpperLeftCornerCoordinates = (monitorInfo.rcWork.left, monitorInfo.rcWork.top),
-                    LowerRightCornerCoordinates = (monitorInfo.rcWork.right, monitorInfo.rcWork.bottom)
+                    UpperLeftCornerCoordinates = (monitorInfo.rcWork.Left, monitorInfo.rcWork.Top),
+                    LowerRightCornerCoordinates = (monitorInfo.rcWork.Right, monitorInfo.rcWork.Bottom)
                 }
                 : null;
         }
